@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Olist 电商用户分析</title>
+<link rel="stylesheet" href="style.css">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
+.case-hero h1{font-family:var(--serif);font-weight:900;letter-spacing:.01em;line-height:1.25}
+h2{font-family:var(--serif);font-weight:900;letter-spacing:.01em}
+.mesh{display:none}
+.case-top{position:relative;overflow:hidden;color:var(--cover-ink);background:linear-gradient(180deg,var(--cover-1) 0%,var(--cover-2) 55%,var(--cover-3) 100%)}
+.case-top .cover-canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.case-top .case-hero{position:relative;z-index:1;background:none;border:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;padding:110px 0 190px;margin:0}
+.case-top .case-hero .lede,.case-top .meta,.case-top .meta b,.case-top .back{color:inherit}
+.case-top .lede{opacity:.86}.case-top .meta{opacity:.75}.case-top .eyebrow{color:inherit;opacity:.75}
+.case-top .case-hero > *{pointer-events:auto}
+@media (max-width:640px){.case-top .case-hero{padding:96px 0 150px}}
+.finding{background:none;border-top:1px solid var(--rule);border-radius:0;padding:18px 0}
+.findings{gap:0}
+.rec{background:none;border-top:1px solid var(--rule);border-radius:0;padding:18px 0}
+.stat{background:none;border-top:1px solid var(--ink);border-radius:0;padding:14px 0 0}
+.stat .n{font-size:34px}
+.table-wrap{background:none;padding:0}
+.callout{background:var(--sky-wash);border-radius:0 14px 14px 0}
+.q::before{content:"业务问题　"}</style>
+</head>
+<body>
+<header class="nav gutter" style="position:fixed;left:0;right:0">
+  <div class="wrap">
+    <div class="nav-in glass">
+      <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"></span>姜玉倩<span class="full">&nbsp;· 数据分析作品集</span></a>
+      <nav class="nav-links" aria-label="主导航"><a href="olist.html" aria-current="page">案例 01</a><a href="ab.html">案例 02</a><a href="index.html#about">联系</a></nav>
+    </div>
+  </div>
+</header>
+<div class="case-top">
+  <canvas class="cover-canvas" data-shape="orders" data-density=".5" data-top=".74" data-peak="0" aria-hidden="true"></canvas>
+  <div class="gutter"><div class="narrow"><section class="case-hero">
+      <a class="back" href="index.html">← 返回作品集</a>
+<div class="eyebrow">案例 01 · 用户与经营分析</div>
+  <h1>增长见顶之后，这家电商平台应该先修物流</h1>
+  <p class="lede">Olist 是巴西的一个电商平台。我用它公开的近 10 万笔订单回答了四个问题：增长靠什么，用户为什么不回来，差评从哪来，资源有限时先改什么。</p>
+  <div class="meta">
+    <span><b>数据</b>　Olist 公开数据集，8 张关联表</span>
+    <span><b>时间窗</b>　2017.01 – 2018.08</span>
+    <span><b>工具</b>　SQL（SQLite，窗口函数 / CTE）、Python（pandas、matplotlib）</span>
+  </div>
+    </section></div></div>
+</div>
+<main class="gutter">
+  <div class="narrow">
+
+<section class="stats" aria-label="数据概况">
+  <div class="stat"><div class="n">97,905</div><div class="l">有效订单</div></div>
+  <div class="stat"><div class="n">94,703</div><div class="l">独立用户</div></div>
+  <div class="stat"><div class="n">R$ 1,345 万</div><div class="l">GMV（巴西雷亚尔）</div></div>
+  <div class="stat"><div class="n">72</div><div class="l">商品品类</div></div>
+</section>
+
+<section>
+  <h2>核心结论</h2>
+  <div class="findings">
+    <div class="finding"><div><strong>增长全靠拉新，2018 年已经见顶</strong><span>2018 年 1–8 月 GMV 同比增长 <span class="num">138%</span>，几乎都来自买家数增加（<span class="num">+138.6%</span>），客单价和人均订单数基本没动。进入 2018 年后，月订单量一直停在 6–7 千单。</span></div></div>
+    <div class="finding"><div><strong>用户很少回来，主要是品类原因，体验也有影响</strong><span>复购率 <span class="num">3.0%</span>，去掉同一天拆单的情况后只有 <span class="num">2.1%</span>。平台卖的多是耐用品，复购本来就低；但首单遇到延迟的用户，复购率比按时送达的低约 <span class="num">30%</span>。</span></div></div>
+    <div class="finding"><div><strong>差评主要出在配送延迟上</strong><span>延迟订单只占 <span class="num">6.7%</span>，却带来了 <span class="num bad">32.6%</span> 的 1–2 分差评。晚到 7 天以上的订单，<span class="num bad">69.8%</span> 打了 1 星；按时订单只有 <span class="num">6.6%</span>。</span></div></div>
+  </div>
+</section>
+
+<section>
+  <h2>1 · 增长从哪里来</h2>
+  <p class="q">平台这两年增长得怎么样？增长靠的是买家变多，还是每个人买得更多？</p>
+  <figure class="chart-card glass"><div class="ct">订单量在 2017 年快速增长，2018 年进入平台期</div><div class="cs">每月有效订单数</div><div class="chart" data-chart="monthly" data-label="2017 年 1 月至 2018 年 8 月月订单量折线图：从 787 单增长到 2017 年 11 月黑五的 7,421 单，2018 年稳定在每月 6 千到 7 千单"></div></figure>
+  <p>把 GMV 拆成 <b>买家数 × 人均订单数 × 客单价</b>，比较 2018 年和 2017 年同期（1–8 月）：</p>
+  <figure class="chart-card glass"><div class="ct">GMV 同比 +138%，几乎全部来自买家数增长</div><div class="cs">2018 年 1–8 月对比 2017 年同期</div><div class="chart" data-chart="growth" data-label="同比变化：买家数 +138.6%，人均订单数 -0.6%，客单价 +0.4%"></div></figure>
+  <p>增长几乎全部来自新买家。客单价一直在 R$ 137 上下，人均订单数接近 1，也就是说平台每多卖一单，基本都要多拉来一个新客。2018 年订单量不再上涨，拉新的效果在变弱。</p>
+  <details><summary>SQL 要点：用 LAG() 计算月环比</summary><pre>WITH m AS (
+  SELECT month, COUNT(*) AS orders, COUNT(DISTINCT user_id) AS buyers,
+         SUM(gmv) AS gmv, SUM(gmv) / COUNT(*) AS aov
+  FROM v_orders GROUP BY month)
+SELECT *, 100.0 * (gmv / LAG(gmv) OVER (ORDER BY month) - 1) AS gmv_mom_pct
+FROM m ORDER BY month;</pre></details>
+</section>
+
+<section>
+  <h2>2 · 用户为什么不回来</h2>
+  <p class="q">买过一次的用户，有多少会再回来？复购低是品类决定的，还是体验造成的？</p>
+  <p><span class="num">94,703</span> 个用户里，只有 <span class="num">2,874</span> 人下过两单以上，复购率 <span class="num">3.0%</span>。再细看，其中 <span class="num">31%</span> 的"第二单"和首单是同一天下的，大多是一次购物拆成了两单。去掉这部分，真实复购率是 <span class="num">2.1%</span>。按首单月份分组看留存，首单后每个月回来的用户都不到 <span class="num">1%</span>。</p>
+  <p>先按首单品类拆开看，差别很明显：</p>
+  <figure class="chart-card glass"><div class="ct">复购率普遍很低，家居、箱包等品类相对较高</div><div class="cs">深色为高于平均（3.0%）的品类</div><div class="chart" data-chart="catRepeat" data-label="首单品类复购率横向条形图：箱包配饰 5.8% 最高，电子产品 1.6% 最低"></div></figure>
+  <p>箱包、家居、床品这类会反复添置的东西，复购率是电子产品、游戏机的 2–3 倍。手机、电脑配件、手表买一次能用很久，短期内不回来很正常，这是整体复购低的主要原因。</p>
+  <p>体验的影响，我一开始没看出来。最先用"下过两单以上"来算，首单打差评和打好评的用户复购率几乎一样（2.9% 对 3.1%）。后来发现这个算法有两个问题：同日拆单被算成了复购；最近才下首单的用户，还没来得及回来。改用真实复购率，并且只看 2018 年 3 月前首单、至少有 6 个月观察期的用户，差别就出来了：</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>首单情况</th><th>用户数</th><th>真实复购率</th></tr></thead>
+    <tbody>
+      <tr><td>评分 4–5 分</td><td class="num">42,842</td><td class="num">3.00%</td></tr>
+      <tr><td>评分 1–2 分</td><td class="num">7,195</td><td class="num bad">2.22%</td></tr>
+      <tr><td>按时送达</td><td class="num">51,244</td><td class="num">2.91%</td></tr>
+      <tr><td>延迟送达</td><td class="num">3,580</td><td class="num bad">2.04%</td></tr>
+    </tbody>
+  </table></div>
+  <p>首单延迟的用户，复购率低了约 <span class="num">30%</span>。复购低主要是品类结构决定的，但配送做得好不好，也会影响一部分用户回不回来。</p>
+  <details><summary>SQL 要点：用户 ID 的坑，以及用 ROW_NUMBER() 算真实复购</summary><pre>-- customer_id 每笔订单都会新生成一个，用它算复购率结果是 0%
+-- 必须用 customer_unique_id 代表"一个真实的人"
+WITH r AS (
+  SELECT user_id, order_id, purchase_ts,
+         ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY purchase_ts) AS k
+  FROM v_orders),
+f AS (  -- 每个用户的首单；只保留至少有 6 个月观察期的用户
+  SELECT user_id, order_id, purchase_ts AS first_ts
+  FROM r WHERE k = 1 AND purchase_ts &lt; '2018-03-01'),
+rep AS (  -- 首单 1 天以后是否再次下单（排除同日拆单）
+  SELECT f.user_id,
+         MAX(julianday(o.purchase_ts) - julianday(f.first_ts) &gt;= 1) AS repeated
+  FROM f JOIN v_orders o USING (user_id)
+  GROUP BY f.user_id)
+SELECT CASE WHEN v.review_score &gt;= 4 THEN '4-5 分'
+            WHEN v.review_score = 3  THEN '3 分' ELSE '1-2 分' END AS first_score,
+       COUNT(*) AS users,
+       100.0 * SUM(rep.repeated) / COUNT(*) AS true_repeat_pct
+FROM f JOIN rep USING (user_id) JOIN v_review v USING (order_id)
+GROUP BY first_score;</pre></details>
+
+  <h3>用户分群：RFM 需要调整</h3>
+  <p>RFM 按最近一次购买（R）、购买次数（F）和消费金额（M）给用户分群。但这里 <span class="num">97%</span> 的用户只买过一次，F 基本没有区分度。所以我把买过两次以上的用户单独归为"复购用户"，其余用户按 R（180 天内有没有买过）和 M（是否高于中位数 R$ 89.8）分成四组。</p>
+  <figure class="chart-card glass"><div class="ct">“沉睡高价值”用户占 28%，却贡献了 46% 的 GMV</div><div class="cs">各分群的用户占比与 GMV 占比</div><div class="legend"><span><i style="background:var(--sky-soft)"></i>用户占比</span><span><i style="background:var(--sky)"></i>GMV 占比</span></div><div class="chart" data-chart="rfm" data-label="五个用户分群的用户占比与 GMV 占比：沉睡高价值用户占 28%、贡献 46% GMV"></div></figure>
+  <p>"沉睡高价值"用户最值得花力气召回：人数占 <span class="num">28%</span>，贡献了 <span class="num">46%</span> 的 GMV，人均消费 R$ 232，但平均已经 <span class="num">339</span> 天没下单了。</p>
+</section>
+
+<section>
+  <h2>3 · 差评从哪里来</h2>
+  <p class="q">如果只能改一件事来提升体验，应该改什么？</p>
+  <p>把实际送达日期和平台承诺的预计送达日期对比，<span class="num">95,560</span> 笔已签收订单里有 <span class="num">6.7%</span> 晚到了。晚得越久，差评越多：</p>
+  <figure class="chart-card glass"><div class="ct">延迟 7 天以上的订单，七成会给 1 星</div><div class="cs">按比预计晚了几天分组</div><div class="chart" data-chart="delay" data-label="按延迟程度分组的 1 星差评占比：按时 6.6%，延迟 1-3 天 25.1%，4-7 天 58.6%，7 天以上 69.8%"></div></figure>
+
+  <h3>差评是延迟本身带来的吗？</h3>
+  <p>也可能是另一种情况：延迟订单刚好集中在偏远的州或难配送的品类，这些订单本来评分就低。为了排除这一点，我在每个"州 × 品类"组合内部比较按时和延迟订单的评分，再按延迟订单数加权平均。</p>
+  <p>控制州和品类后，延迟订单平均仍然低 <span class="num">1.99</span> 分，和不控制时的 <span class="num">2.02</span> 分几乎一样。<span class="num">255</span> 个可比较的组合里，每一个都是延迟订单评分更低。所以评分下降确实和延迟有关，不是地区或品类带来的。</p>
+  <details><summary>SQL 要点：分层对比，控制州和品类</summary><pre>WITH cell AS (
+  SELECT state, category,
+         AVG(CASE WHEN late_days &lt;= 0 THEN review_score END) AS on_time,
+         AVG(CASE WHEN late_days &gt;  0 THEN review_score END) AS late,
+         SUM(late_days &gt; 0) AS n_late
+  FROM v_delivery
+  GROUP BY state, category
+  HAVING SUM(late_days &gt; 0) &gt;= 5 AND SUM(late_days &lt;= 0) &gt;= 5)
+SELECT COUNT(*) AS cells,
+       SUM((on_time - late) * n_late) / SUM(n_late) AS weighted_score_gap,
+       100.0 * SUM(on_time &gt; late) / COUNT(*)      AS cells_late_worse_pct
+FROM cell;</pre></details>
+
+  <h3>延迟集中在哪里</h3>
+  <p><b>时间上，集中在大促之后。</b>2017 年 11 月黑五当月延迟率 <span class="num">12.3%</span>，2018 年 2 月和 3 月分别是 <span class="num">14.0%</span> 和 <span class="num">18.7%</span>，这几个月的平均评分也是全期最低。三个月的订单只占 <span class="num">21.7%</span>，延迟订单却占了 <span class="num">48.5%</span>。</p>
+  <figure class="chart-card glass"><div class="ct">延迟率一升高，当月评分就下滑</div><div class="cs">上：月度延迟率；下：月度平均评分</div><div class="chart" data-chart="monthlyLate" data-label="月度延迟率柱状图与月度平均评分折线图，上下排列共享时间轴"></div><figcaption>2018 年 6 月以后，有些延迟订单在数据截止时还没送到，这几个月的延迟率偏低。</figcaption></figure>
+  <p><b>地区上，里约（RJ）最需要优先处理。</b>东北部几个州延迟率更高，但订单不多。里约是第二大市场，<span class="num">12,172</span> 单，延迟率 <span class="num bad">12.0%</span>，差不多是圣保罗（SP，<span class="num">4.4%</span>）的 3 倍。</p>
+  <figure class="chart-card glass"><div class="ct">里约（RJ）单量第二，延迟率却是圣保罗（SP）的近 3 倍</div><div class="cs">订单数 500 以上的州，虚线为平均延迟率 6.7%</div><div class="chart" data-chart="stateLate" data-label="订单数 500 以上的 17 个州延迟率横向条形图，里约 12.0% 高亮，圣保罗 4.4% 高亮"></div></figure>
+</section>
+
+<section>
+  <h2>建议</h2>
+  <p class="prose">按投入产出排序。影响估算用了一个简化假设：延迟订单如果按时送达，评分会和同州同品类的按时订单一样。</p>
+  <div class="recs">
+    <div class="rec">
+      <div class="t">1. 大促前做物流产能预案</div>
+      <p class="why">黑五和 2018 年 2–3 月的延迟订单接近总数的一半，而延迟既拉低评分，也影响复购。大促前按预测单量提前准备仓储和运力，大促期间把预计送达日期设得保守一些，对可能晚到的订单提前通知用户。</p>
+      <div class="impact">如果延迟订单都能按时送达，平均评分可以从 4.16 升到约 4.29，1–2 分差评减少约 27%（12,228 → 约 8,870 条）。</div>
+    </div>
+    <div class="rec">
+      <div class="t">2. 优先改善里约的配送</div>
+      <p class="why">里约单量大、延迟率高，改善一个州就能覆盖很多订单。可以先从承运商和仓库覆盖范围查起。</p>
+      <div class="impact">里约延迟率降到圣保罗水平，延迟订单从 1,456 单降到约 540 单，相当于全平台延迟订单减少约 14%。</div>
+    </div>
+    <div class="rec">
+      <div class="t">3. 定向召回"沉睡高价值"用户，用 A/B 测试验证</div>
+      <p class="why">复购低主要是品类结构造成的，大范围发券意义不大。更划算的做法是只针对这 26,679 名用户，优先推家居、床品、箱包这类复购高的品类，同时留一组不推送作为对照。</p>
+      <div class="impact">效果要等实验结果才能估算。留对照组，是为了不把本来就会回来的用户算成召回效果。</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>4 · 落到业务上</h2>
+  <p class="q">这些发现要变成哪些行动？谁来做，怎么判断做成了？</p>
+
+  <h3>指标拆解：增长从哪来，问题在哪</h3>
+  <p>把 GMV 一层层拆开，对比 2017 年和 2018 年同期（1–8 月）。2018 年的 52,336 个买家里，<span class="num">98.7%</span> 是第一次下单，从 2017 年回来的老客只有 <span class="num">663</span> 人。同一时期，延迟率从 <span class="num">3.4%</span> 涨到 <span class="num bad">7.6%</span>，平均评分从 4.23 降到 4.14。</p>
+  <figure class="chart-card glass">
+    <div class="ct">GMV 驱动树：规模翻倍，但履约没跟上</div>
+    <div class="cs">2017 → 2018 年 1–8 月；蓝框为主要增长来源，红框为变差的指标</div>
+    <div class="tree-hint">← 左右滑动查看完整驱动树 →</div>
+    <div class="tree-wrap">
+      <svg class="tree" viewBox="0 0 820 520" role="img" aria-label="GMV 驱动树：GMV 从 308 万增至 734 万，来自买家数增长 138.6%，其中新客 51,673 人、老客仅 663 人；人均订单数和客单价基本不变；同期延迟率从 3.4% 升至 7.6%，平均评分从 4.23 降至 4.14">
+        <g class="links">
+          <path d="M206,201 H243 V71 H280"/><path d="M206,201 H280"/><path d="M206,201 H243 V331 H280"/>
+          <path d="M476,71 H500 V31 H560"/><path d="M476,71 H500 V111 H560"/>
+          <path d="M476,331 H500 V293 H560"/><path d="M476,331 H500 V369 H560"/>
+          <path d="M476,461 H560" class="arrow"/>
+        </g>
+        <g class="node hot" transform="translate(10,170)"><rect width="196" height="62" rx="12"/><text x="14" y="21" class="t1">GMV</text><text x="14" y="39" class="t2">R$ 308 万 → 734 万</text><text x="14" y="55" class="up">+138%</text></g>
+        <g class="node hot" transform="translate(280,40)"><rect width="196" height="62" rx="12"/><text x="14" y="21" class="t1">买家数</text><text x="14" y="39" class="t2">21,936 → 52,336</text><text x="14" y="55" class="up">+138.6%</text></g>
+        <g class="node" transform="translate(280,170)"><rect width="196" height="62" rx="12"/><text x="14" y="21" class="t1">× 人均订单数</text><text x="14" y="39" class="t2">1.029 → 1.023</text><text x="14" y="55" class="t3">−0.6%，几乎不变</text></g>
+        <g class="node" transform="translate(280,300)"><rect width="196" height="62" rx="12"/><text x="14" y="21" class="t1">× 客单价</text><text x="14" y="39" class="t2">R$ 136.55 → 137.14</text><text x="14" y="55" class="t3">+0.4%，几乎不变</text></g>
+        <g class="node hot" transform="translate(560,0)"><rect width="250" height="62" rx="12"/><text x="14" y="21" class="t1">新客（当年首次下单）</text><text x="14" y="39" class="t2">21,936 → 51,673</text><text x="14" y="55" class="up">占 2018 年买家的 98.7%</text></g>
+        <g class="node warn" transform="translate(560,80)"><rect width="250" height="62" rx="12"/><text x="14" y="21" class="t1">老客回购</text><text x="14" y="39" class="t2">— → 663</text><text x="14" y="55" class="dn">只占 1.3%</text></g>
+        <g class="node" transform="translate(560,262)"><rect width="250" height="62" rx="12"/><text x="14" y="21" class="t1">每单件数</text><text x="14" y="39" class="t2">1.134 → 1.142</text><text x="14" y="55" class="t3">基本不变</text></g>
+        <g class="node" transform="translate(560,338)"><rect width="250" height="62" rx="12"/><text x="14" y="21" class="t1">件均价</text><text x="14" y="39" class="t2">R$ 120.46 → 120.08</text><text x="14" y="55" class="t3">基本不变</text></g>
+        <line x1="10" x2="810" y1="414" y2="414" class="sep"/>
+        <text x="10" y="440" class="t3">同期的体验变化</text>
+        <g class="node warn" transform="translate(280,430)"><rect width="196" height="62" rx="12"/><text x="14" y="21" class="t1">延迟率</text><text x="14" y="39" class="t2">3.4% → 7.6%</text><text x="14" y="55" class="dn">翻了一倍多</text></g>
+        <g class="node warn" transform="translate(560,430)"><rect width="250" height="62" rx="12"/><text x="14" y="21" class="t1">平均评分</text><text x="14" y="39" class="t2">4.23 → 4.14</text><text x="14" y="55" class="dn">下降</text></g>
+      </svg>
+    </div>
+    <figcaption>2017 年是数据起点，没有更早的老客，所以老客回购记为"—"。</figcaption>
+  </figure>
+  <p>放在一起看：<b>平台靠拉新把规模做大了一倍，但物流没跟上。延迟变多，评分下降，新客的首单体验变差，回来的人很少，只能继续花钱拉新。</b>所以我认为现阶段最该先解决的是履约，而不是营销。</p>
+
+  <h3>行动方案</h3>
+  <p>按优先级排列，综合考虑前面估算的影响大小和实施难度（难度是我的主观判断）。</p>
+  <div class="table-wrap"><table class="plan">
+    <thead><tr><th>优先级</th><th>建议</th><th>负责团队</th><th>第一步（30 天内）</th><th>成功指标</th></tr></thead>
+    <tbody>
+      <tr><td><span class="pri p1">P1</span></td><td><b>大促物流预案</b><br><span class="sub">影响最大：近一半延迟订单集中在 3 个大促月</span></td><td>物流 / 供应链</td><td>用历年大促单量，预测下次黑五各州的仓配需求，提前签约临时运力；大促期间把预计送达日期设得更保守</td><td>大促月延迟率从 12%–19% 降到 6% 以下；1–2 分差评占比下降</td></tr>
+      <tr><td><span class="pri p1">P1</span></td><td><b>优先改善里约配送</b><br><span class="sub">单量第二、延迟率是圣保罗的近 3 倍</span></td><td>物流 + 区域运营</td><td>拆解里约的延迟订单：集中在哪些承运商、哪些卖家、哪一段时效最慢</td><td>里约延迟率从 12.0% 降到 6% 左右，逐步接近圣保罗的 4.4%</td></tr>
+      <tr><td><span class="pri p2">P2</span></td><td><b>定向召回"沉睡高价值"用户</b><br><span class="sub">成本低，但效果不确定，需要实验验证</span></td><td>用户运营 / CRM</td><td>对 26,679 名沉睡高价值用户，随机 90% 推送家居、床品、箱包等高复购品类的优惠，留 10% 不推送作为对照组</td><td>推送组 90 天复购率高于对照组，且增量收入大于优惠成本</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>怎么验证改进有没有用</h3>
+  <p>物流改进没办法像网页一样随机分给每个用户，但可以<b>按州做试点</b>，借用案例 02 的实验思路来评估：</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>设计要素</th><th>方案</th></tr></thead>
+    <tbody>
+      <tr><td>试点范围</td><td>选 3 个延迟率高的州（如里约、巴伊亚、圣埃斯皮里图）先上物流预案，其余州保持现状作为对照</td></tr>
+      <tr><td>观察窗口</td><td>下一次大促前 4 周到大促后 4 周</td></tr>
+      <tr><td>主指标</td><td>延迟率</td></tr>
+      <tr><td>次要指标</td><td>1–2 分差评占比、90 天复购率</td></tr>
+      <tr><td>护栏指标</td><td>每单物流成本，确保改善不是靠无限加钱换来的</td></tr>
+      <tr><td>评估方法</td><td>双重差分（DID）：比较试点州和对照州在大促前后的变化差，剔除"大促本身"对所有州的共同影响</td></tr>
+      <tr><td>推广条件</td><td>试点州延迟率相对对照州多下降 3 个百分点以上，且每单物流成本增幅在可接受范围内，再推广到全国</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout">一句话向业务方汇报：<b>平台增长全靠拉新，但物流没跟上，延迟订单带来了三分之一的差评，首单延迟的用户复购率也低 30%。建议先在 3 个州试点大促物流预案，看延迟率和差评率有没有改善，有效再推广。</b></div>
+</section>
+
+<section>
+  <h2>口径与方法</h2>
+  <div class="table-wrap"><table>
+    <thead><tr><th>指标</th><th>定义</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>分析时间窗</td><td>2017-01-01 至 2018-08-31 下单</td><td>2016 年和 2018 年 9 月后每月不足 400 单，数据不完整</td></tr>
+      <tr><td>有效订单</td><td>排除 <code>canceled</code>、<code>unavailable</code></td><td>两者合计占 1.2%</td></tr>
+      <tr><td>用户</td><td><code>customer_unique_id</code></td><td><code>customer_id</code> 每单一个，不能代表人</td></tr>
+      <tr><td>GMV</td><td>商品价格之和，不含运费</td><td>与支付金额的差异小于 0.1%</td></tr>
+      <tr><td>复购率</td><td>有效订单 ≥ 2 的用户占比</td><td>另算剔除同日下单的"真实复购率"</td></tr>
+      <tr><td>延迟</td><td>实际送达日期晚于预计送达日期</td><td>只看已签收且有送达时间的订单</td></tr>
+      <tr><td>订单评分</td><td>每单取最后一条评价</td><td>0.6% 的订单有多条评价</td></tr>
+    </tbody>
+  </table></div>
+  <h3>局限</h3>
+  <ul class="prose">
+    <li>分层对比排除了州和品类的干扰，但这仍是观察数据，卖家、价格等因素没有全部控制，影响估算只能作为方向参考。</li>
+    <li>数据截止到 2018 年 8 月，越晚首单的用户观察期越短，留存会偏低，所以比较复购率时只取观察期满 6 个月的用户。</li>
+    <li>延迟分析只包含已签收且有评价的订单。另有约 0.8% 的评价同时关联了多个订单，对结论影响很小。</li>
+    <li>数据里没有浏览、加购等行为日志，做不了下单前的转化漏斗。</li>
+  </ul>
+</section>
+    <nav class="next" aria-label="更多案例">
+      <a class="glass glow" href="index.html"><small>BACK</small><span>← 返回作品集首页</span></a>
+      <a class="glass glow" href="ab.html"><small>NEXT CASE</small><span>案例 02 · 落地页 A/B 测试 →</span></a>
+    </nav>
+    <footer class="foot">作者：姜玉倩（武汉轻工大学 · 大数据管理与应用）｜电话 13971242033｜邮箱 jiangyuqian116@163.com<br>数据来源：Brazilian E-Commerce Public Dataset by Olist（Kaggle 公开数据集）。金额单位为巴西雷亚尔（R$）。<br>页面代码与部分分析代码在 AI（Claude）辅助下完成；分析思路、口径判断与结论由我本人完成并逐一核对。</footer>
+  </div>
+</main>
+<script src="data.js"></script>
+<script src="charts.js"></script>
+<script src="cover.js"></script>
+<script>
+document.querySelectorAll('.glow').forEach(el => el.addEventListener('pointermove', e => {
+  const r = el.getBoundingClientRect();
+  el.style.setProperty('--mx', (e.clientX - r.left) + 'px'); el.style.setProperty('--my', (e.clientY - r.top) + 'px');
+}));
+</script>
+</body>
+</html>

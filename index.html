@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>姜玉倩的数据作品集</title>
+<link rel="stylesheet" href="style.css">
+<style>
+/* 首页：作品优先。简短引言 → 两张案例封面卡（粒子画面即作品的数据）→ 数字条 → 深色带（SQL 终端 + 方法）→ 关于与联系 */
+body { background: var(--bg); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 41; background: var(--bg); }
+.mesh i:nth-child(2), .mesh i:nth-child(4) { display: none; }
+
+/* 引言 */
+.intro { padding-block: 108px 30px; display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
+.intro h1 { font-family: var(--serif); font-weight: 900; font-size: clamp(30px, 4.2vw, 50px); line-height: 1.25; letter-spacing: .01em; margin: 10px 0 0; }
+.intro p { color: var(--ink-2); margin: 10px 0 0; max-width: 34em; }
+.intro .by { font-size: 13px; color: var(--muted); text-align: right; line-height: 1.7; }
+.intro .by b { color: var(--ink); font-weight: 700; }
+@media (max-width: 640px) { .intro { padding-block: 92px 22px; } .intro .by { text-align: left; } }
+
+/* 案例封面卡 */
+.works { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+@media (max-width: 860px) { .works { grid-template-columns: minmax(0, 1fr); } }
+.work { display: flex; flex-direction: column; border-radius: 26px; overflow: hidden; text-decoration: none; color: var(--ink); background: var(--glass-strong); border: 1px solid var(--glass-border); box-shadow: var(--shadow); transition: transform .35s cubic-bezier(.2, .7, .1, 1), box-shadow .35s; }
+.work:hover { transform: translateY(-4px); box-shadow: 0 2px 2px rgba(11, 34, 54, .05), 0 26px 60px rgba(20, 80, 140, .2); }
+@media (prefers-reduced-motion: reduce) { .work, .work:hover { transition: none; transform: none; } }
+.art { position: relative; height: 300px; overflow: hidden; color: var(--cover-ink); background: linear-gradient(180deg, var(--cover-1) 0%, var(--cover-2) 52%, var(--cover-3) 100%); }
+.art::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: var(--grain-o); mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+.art canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.art .tag { position: absolute; z-index: 2; left: 20px; top: 18px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; opacity: .8; }
+.art .legend2 { position: absolute; z-index: 2; right: 20px; top: 18px; font-family: var(--font-mono); font-size: 11px; opacity: .75; text-align: right; }
+@media (max-width: 560px) { .art { height: 240px; } }
+.wbody { padding: 22px 24px 24px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+.wno { font-family: var(--font-mono); font-size: 12px; letter-spacing: .12em; color: var(--sky); }
+.wbody h2 { font-family: var(--serif); font-weight: 900; font-size: clamp(22px, 2.3vw, 28px); line-height: 1.38; margin: 0; letter-spacing: .01em; }
+.wbody .find { color: var(--ink-2); font-size: 15px; margin: 0; }
+.kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; padding-top: 12px; border-top: 1px solid var(--rule); }
+.kpi .n { font-family: var(--font-display); font-weight: 800; font-size: 25px; line-height: 1.15; white-space: nowrap; font-variant-numeric: tabular-nums lining-nums; color: var(--sky); }
+.kpi .n.bad { color: var(--coral); }
+.kpi .l { font-size: 12px; color: var(--muted); line-height: 1.45; margin-top: 2px; }
+.wfoot { margin-top: auto; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-top: 6px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.arrow { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: var(--bg); font-weight: 700; transition: transform .25s; }
+.work:hover .arrow { transform: translateX(4px); }
+
+/* 数字条 */
+.strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; margin-top: 56px; }
+.strip div { border-top: 1px solid var(--ink); padding-top: 12px; }
+.strip .v { font-family: var(--font-display); font-weight: 800; font-size: clamp(28px, 3.4vw, 40px); line-height: 1.1; letter-spacing: -.02em; font-variant-numeric: tabular-nums lining-nums; }
+.strip .l { font-size: 13px; color: var(--ink-2); margin-top: 6px; }
+@media (max-width: 760px) { .strip { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* 深色带 */
+.night { margin-top: 96px; color: #e6f2fc; background: radial-gradient(120% 90% at 85% 0%, #0d4f8c 0%, transparent 55%), radial-gradient(90% 80% at 0% 100%, #0a3a66 0%, transparent 60%), #030b16; position: relative; overflow: hidden; }
+.night::after { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(190, 230, 255, .55) .7px, transparent .8px); background-size: 46px 46px; opacity: .22; pointer-events: none; }
+.night-in { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px; padding-block: 88px; align-items: start; }
+.night h2 { font-family: var(--serif); font-weight: 900; font-size: clamp(26px, 3.2vw, 38px); margin: 10px 0 24px; color: #ffffff; letter-spacing: .01em; line-height: 1.35; }
+.night .eyebrow { color: #7fd0ff; }
+.night .term { min-height: 430px; display: flex; flex-direction: column; background: rgba(4, 16, 30, .82); }
+.term-body { padding: 16px 18px 18px; flex: 1; min-width: 0; }
+.term-body pre { white-space: pre; }
+.term-tabs { display: flex; gap: 6px; padding: 10px 14px 12px; border-top: 1px solid rgba(140, 200, 255, .1); flex-wrap: wrap; }
+.term-tabs button { font: 500 11px var(--font-mono); color: var(--term-dim); background: transparent; border: 1px solid rgba(140, 200, 255, .16); border-radius: 999px; padding: 4px 10px; cursor: pointer; }
+.term-tabs button[aria-pressed="true"] { color: var(--term-bg); background: var(--term-kw); border-color: var(--term-kw); }
+.caret { display: inline-block; width: 8px; height: 15px; background: var(--term-kw); vertical-align: -2px; animation: blink 1s steps(2) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .caret { animation: none; } }
+.res { color: #e6f3ff; } .res .hd { color: var(--term-dim); } .ok { color: #7ee2b0; }
+.steps2 { list-style: none; padding: 0; margin: 0; counter-reset: s; }
+.steps2 li { counter-increment: s; display: grid; grid-template-columns: 60px minmax(0, 1fr); gap: 14px; padding: 16px 0; border-top: 1px solid rgba(140, 200, 255, .16); margin: 0; }
+.steps2 li::before { content: "0" counter(s); font-family: var(--font-display); font-weight: 800; font-size: 32px; line-height: 1; color: transparent; -webkit-text-stroke: 1px #7fd0ff; }
+.steps2 b { display: block; font-size: 16px; color: #ffffff; margin-bottom: 4px; }
+.steps2 span { color: #a9c6dd; font-size: 14px; display: block; }
+.steps2 em { font-style: normal; color: #7fd0ff; font-size: 13px; display: block; margin-top: 6px; }
+.toolline { margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(140, 200, 255, .16); font-family: var(--font-mono); font-size: 12px; line-height: 2; color: #7f9db6; }
+.toolline b { color: #cfe6fa; font-weight: 500; margin-right: 6px; }
+@media (max-width: 900px) { .night-in { grid-template-columns: minmax(0, 1fr); gap: 40px; padding-block: 64px; } }
+@media (max-width: 560px) { .term-body pre { font-size: 11px; } .night .term { min-height: 380px; } }
+
+/* 关于与联系 */
+.about { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; padding-block: 72px 24px; align-items: start; }
+.about h2 { font-family: var(--serif); font-weight: 900; font-size: 26px; margin: 8px 0 10px; }
+.about p { color: var(--ink-2); margin: 0; }
+.lines { display: grid; border-top: 1px solid var(--ink); }
+.line { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--rule); }
+.line .ck { font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em; color: var(--muted); text-transform: uppercase; }
+.line .cv { font-family: var(--font-display); font-weight: 600; font-size: 20px; user-select: all; overflow-wrap: anywhere; }
+.copy { font: 500 12px var(--font-mono); color: var(--ink); background: transparent; border: 1px solid var(--ink); border-radius: 999px; padding: 6px 14px; cursor: pointer; transition: background .2s, color .2s; }
+.copy:hover { background: var(--ink); color: var(--bg); }
+@media (max-width: 760px) { .about { grid-template-columns: minmax(0, 1fr); gap: 24px; } }
+.endnote { font-size: 13px; color: var(--muted); padding-block: 32px 48px; }
+</style>
+</head>
+<body>
+
+
+<div class="mesh" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+<header class="nav gutter" style="position:fixed;left:0;right:0">
+  <div class="wrap">
+    <div class="nav-in glass">
+      <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"></span>姜玉倩<span class="full">&nbsp;· 数据分析作品集</span></a>
+      <nav class="nav-links" aria-label="主导航"><a href="olist.html">案例 01</a><a href="ab.html">案例 02</a><a href="#about">联系</a></nav>
+    </div>
+  </div>
+</header>
+
+<main class="gutter">
+  <div class="wrap">
+    <section class="intro">
+      <div>
+        <div class="eyebrow">Data Analysis Projects</div>
+        <h1>两个数据分析案例</h1>
+        <p>一个是电商平台的经营诊断，一个是落地页 A/B 测试的上线判断。两个项目都从原始数据做起，先把数据和口径查清楚，再下结论。</p>
+      </div>
+      <div class="by"><b>姜玉倩</b><br>武汉轻工大学 · 大数据管理与应用</div>
+    </section>
+
+    <section class="works" aria-label="案例">
+      <a class="work" href="olist.html">
+        <div class="art">
+          <canvas class="cover-canvas" data-shape="orders" data-top=".3" data-density=".7" role="img" aria-label="粒子画面：近 10 万笔订单组成的月度订单曲线，2017 年 11 月黑五达到峰值 7,421 单"></canvas>
+          <span class="tag">Case 01 · 用户与经营分析</span>
+        </div>
+        <div class="wbody">
+          <h2>增长见顶之后，这家电商平台应该先修物流</h2>
+          <p class="find">用巴西电商 Olist 近 10 万笔订单做的经营诊断。平台增长基本靠拉新，老用户很少回来；延迟订单只占 6.7%，差评却有三分之一出在它们身上。</p>
+          <div class="kpis">
+            <div class="kpi"><div class="n">+138%</div><div class="l">GMV 同比增长</div></div>
+            <div class="kpi"><div class="n">2.1%</div><div class="l">复购率（去掉同日拆单）</div></div>
+            <div class="kpi"><div class="n bad">32.6%</div><div class="l">差评出自延迟订单</div></div>
+          </div>
+          <div class="wfoot"><div class="chips"><span class="chip">多表 JOIN</span><span class="chip">同期群留存</span><span class="chip">RFM</span><span class="chip">分层对比</span></div><span class="arrow" aria-hidden="true">→</span></div>
+        </div>
+      </a>
+
+      <a class="work" href="ab.html">
+        <div class="art">
+          <canvas class="cover-canvas" data-shape="twin" data-top=".34" data-density=".9" role="img" aria-label="粒子画面：新旧落地页两组用户的转化率几乎一样高，旧页面 12.02%，新页面 11.87%，p = 0.23"></canvas>
+          <span class="tag">Case 02 · 实验分析</span>
+        </div>
+        <div class="wbody">
+          <h2>实验结果不显著，新落地页还要不要上线</h2>
+          <p class="find">约 29 万用户、22 天的落地页实验。先查出并处理了一个分流问题，再用置信区间和功效分析判断：新页面就算有提升，也不会超过 0.8%，达不到上线标准。</p>
+          <div class="kpis">
+            <div class="kpi"><div class="n">p = 0.23</div><div class="l">新旧页面无显著差异</div></div>
+            <div class="kpi"><div class="n">≤ 0.8%</div><div class="l">相对提升的上限</div></div>
+            <div class="kpi"><div class="n">178 天</div><div class="l">测出 1% 提升还需要</div></div>
+          </div>
+          <div class="wfoot"><div class="chips"><span class="chip">SRM 检查</span><span class="chip">z 检验</span><span class="chip">功效分析</span><span class="chip">多重比较</span></div><span class="arrow" aria-hidden="true">→</span></div>
+        </div>
+      </a>
+    </section>
+
+    <section class="strip" aria-label="数据规模">
+      <div><div class="v" data-count="97905">97,905</div><div class="l">笔有效订单</div></div>
+      <div><div class="v" data-count="286691">286,691</div><div class="l">名实验用户</div></div>
+      <div><div class="v">8</div><div class="l">张关联数据表</div></div>
+      <div><div class="v">22 天</div><div class="l">A/B 实验时长</div></div>
+    </section>
+  </div>
+
+  <section class="night" id="method" style="margin-left:calc(-1 * max(18px, env(safe-area-inset-left, 0px)));margin-right:calc(-1 * max(18px, env(safe-area-inset-right, 0px)))">
+    <div class="gutter">
+      <div class="wrap night-in">
+        <div>
+          <div class="eyebrow">SQL</div>
+          <h2>项目里的几段关键查询</h2>
+          <div class="term" aria-label="SQL 终端：循环展示项目里的真实查询和结果">
+            <div class="term-bar"><i></i><i></i><i></i><span id="term-file">olist.db — sqlite3</span></div>
+            <div class="term-body"><pre id="term-out"></pre></div>
+            <div class="term-tabs" id="term-tabs" aria-label="选择查询"></div>
+          </div>
+        </div>
+        <div>
+          <div class="eyebrow">Method</div>
+          <h2>我做分析的几个习惯</h2>
+          <ol class="steps2">
+            <li><div><b>先定口径</b><span>动手前先想清楚：指标怎么算，用户怎么认，时间窗取多长。</span><em>Olist 的 customer_id 每下一单就换一个，用它算复购率是 0%；换成 customer_unique_id 才是 3.0%。</em></div></li>
+            <li><div><b>先确认数据可信</b><span>缺失、重复、分组错误，查清楚再往下做。</span><em>A/B 数据里有 3,893 名用户两个页面都看过，整组剔除后两组仍然均衡。</em></div></li>
+            <li><div><b>拆开看，控制干扰</b><span>把总数拆成几个因子，用分层排除其他因素，相关不轻易当成因果。</span><em>在同一个州、同一个品类里比较，延迟订单的评分仍然低 1.99 分。</em></div></li>
+            <li><div><b>落到决策</b><span>结论最后要回答“所以该做什么”，能量化的尽量量化。</span><em>新页面提升的上限是 0.8%，低于 2% 的门槛，所以建议不上线。</em></div></li>
+          </ol>
+          <div class="toolline"><b>SQL</b>JOIN · 窗口函数 · CTE　<b>Python</b>pandas · scipy · matplotlib　<b>统计</b>假设检验 · 置信区间 · 功效分析　<b>可视化</b>matplotlib · Tableau</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <section class="about" id="about">
+      <div>
+        <div class="eyebrow">About</div>
+        <h2>姜玉倩</h2>
+        <p>武汉轻工大学大数据管理与应用专业本科生。对用户增长和体验类的问题比较感兴趣，做分析时习惯先把口径定清楚，最后落到能执行的建议上。</p>
+      </div>
+      <div class="lines">
+        <div class="line"><div class="ck">Phone</div><div class="cv" id="c-phone">13971242033</div><button type="button" class="copy" data-target="c-phone">复制</button></div>
+        <div class="line"><div class="ck">Email</div><div class="cv" id="c-mail">jiangyuqian116@163.com</div><button type="button" class="copy" data-target="c-mail">复制</button></div>
+      </div>
+    </section>
+    <footer class="endnote">两个项目使用的都是公开数据集：Olist 巴西电商数据，以及 Kaggle 上的电商落地页实验数据。<br>页面代码与部分分析代码在 AI（Claude）辅助下完成；分析思路、口径判断与结论由我本人完成并逐一核对。</footer>
+  </div>
+</main>
+
+<script src="data.js"></script>
+<script src="charts.js"></script>
+<script src="cover.js"></script>
+<script>
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* ---------- 终端：循环播放项目中的真实查询与结果 ---------- */
+(() => {
+  const Q = [
+    { tab: '延迟与差评', file: 'olist.db — sqlite3', sql:
+`-- 延迟越久，1 星差评越多
+SELECT CASE WHEN late_days <= 0 THEN '按时'
+            WHEN late_days <= 3 THEN '迟 1-3 天'
+            WHEN late_days <= 7 THEN '迟 4-7 天'
+            ELSE '迟 7 天+' END AS grp,
+       COUNT(*) AS orders,
+       ROUND(100.0 * AVG(review_score = 1), 1)
+         AS one_star
+FROM v_delivery
+GROUP BY grp;`,
+      head: ['grp', 'orders', 'one_star'], rows: [['按时', '89182', '6.6'], ['迟 1-3 天', '1851', '25.1'], ['迟 4-7 天', '1748', '58.6'], ['迟 7 天+', '2779', '69.8']] },
+    { tab: '用户 ID 的坑', file: 'olist.db — sqlite3', sql:
+`-- customer_id 每单都会新生成一个
+SELECT COUNT(DISTINCT customer_id)        AS ids,
+       COUNT(DISTINCT customer_unique_id) AS people
+FROM customers;`,
+      head: ['ids', 'people'], rows: [['99441', '96096']], note: '-- 用 customer_id 算复购率 = 0%，必须用 unique_id' },
+    { tab: '增长拆解', file: 'olist.db — sqlite3', sql:
+`-- 2018 vs 2017（1-8 月）：增长来自哪里
+SELECT substr(month, 1, 4)              AS yr,
+       COUNT(DISTINCT user_id)          AS buyers,
+       ROUND(SUM(gmv) / COUNT(*), 2)    AS aov
+FROM v_orders
+WHERE substr(month, 6, 2) <= '08'
+GROUP BY yr;`,
+      head: ['yr', 'buyers', 'aov'], rows: [['2017', '21936', '136.55'], ['2018', '52336', '137.14']], note: '-- 买家 +138.6%，客单价 +0.4%' },
+    { tab: 'A/B 结果', file: 'ab.db — sqlite3', sql:
+`-- 清洗后两组的转化率
+SELECT "group",
+       COUNT(*)                          AS users,
+       ROUND(100.0 * AVG(converted), 2)  AS cvr
+FROM ab_clean
+GROUP BY "group";`,
+      head: ['group', 'users', 'cvr'], rows: [['control', '143293', '12.02'], ['treatment', '143398', '11.87']], note: '-- z 检验 p = 0.23，95% 区间 [−0.38, +0.09] pp' },
+  ];
+  const KW = /\b(SELECT|FROM|WHERE|GROUP BY|AS|CASE|WHEN|THEN|ELSE|END|AND|DISTINCT)\b/g;
+  const FN = /\b(COUNT|ROUND|AVG|SUM|substr)\b/g;
+  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  function hl(src) {
+    return src.split('\n').map(line => {
+      const ci = line.indexOf('--');
+      let code = ci >= 0 ? line.slice(0, ci) : line, com = ci >= 0 ? line.slice(ci) : '';
+      code = esc(code).replace(/('[^']*'?)/g, '\u0001$1\u0002').replace(/\b(\d+(\.\d+)?)\b/g, '\u0003$1\u0004')
+        .replace(KW, '<span class="k">$1</span>').replace(FN, '<span class="f">$1</span>')
+        .replace(/\u0001/g, '<span class="s">').replace(/\u0002/g, '</span>').replace(/\u0003/g, '<span class="n">').replace(/\u0004/g, '</span>');
+      return code + (com ? '<span class="c">' + esc(com) + '</span>' : '');
+    }).join('\n');
+  }
+  const wlen = s => [...s].reduce((a, ch) => a + (/[　-鿿＀-￯]/.test(ch) ? 2 : 1), 0);
+  const pad = (s, n) => s + ' '.repeat(Math.max(0, n - wlen(s)));
+  function table(q) {
+    const w = q.head.map((h, i) => Math.max(wlen(h), ...q.rows.map(r => wlen(r[i]))) + 2);
+    let out = '<span class="hd">' + q.head.map((h, i) => pad(h, w[i])).join('') + '</span>\n';
+    out += '<span class="hd">' + w.map(n => '─'.repeat(n - 1) + ' ').join('') + '</span>\n';
+    out += q.rows.map(r => r.map((c, i) => pad(c, w[i])).join('')).join('\n');
+    return '<span class="res">' + out + '</span>\n<span class="ok">(' + q.rows.length + ' row' + (q.rows.length > 1 ? 's' : '') + ')</span>' + (q.note ? '\n<span class="c">' + esc(q.note) + '</span>' : '');
+  }
+  const out = document.getElementById('term-out'), tabs = document.getElementById('term-tabs'), file = document.getElementById('term-file');
+  const P = '<span class="c">sqlite&gt; </span>';
+  let idx = 0, timer = null, run = 0;
+  Q.forEach((q, i) => {
+    const b = document.createElement('button'); b.type = 'button'; b.textContent = q.tab; b.setAttribute('aria-pressed', i === 0);
+    b.addEventListener('click', () => play(i, true)); tabs.appendChild(b);
+  });
+  function full(i) { out.innerHTML = P + hl(Q[i].sql) + '\n\n' + table(Q[i]) + '\n' + P + '<span class="caret"></span>'; }
+  function play(i, user) {
+    clearTimeout(timer); const my = ++run; idx = i; file.textContent = Q[i].file;
+    [...tabs.children].forEach((b, j) => b.setAttribute('aria-pressed', j === i));
+    if (reduce) { full(i); return; }
+    const src = Q[i].sql; let n = 0;
+    (function type() {
+      if (my !== run) return;
+      n = Math.min(src.length, n + 2);
+      out.innerHTML = P + hl(src.slice(0, n)) + '<span class="caret"></span>';
+      if (n < src.length) timer = setTimeout(type, 16);
+      else timer = setTimeout(() => {
+        if (my !== run) return;
+        full(i);
+        timer = setTimeout(() => play((i + 1) % Q.length), user ? 9000 : 5200);
+      }, 380);
+    })();
+  }
+  full(0);
+  if (!reduce) timer = setTimeout(() => play(1), 5200);
+})();
+
+
+
+/* ---------- 数字滚动 ---------- */
+(() => {
+  if (reduce || !('IntersectionObserver' in window)) return;
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return; io.unobserve(e.target);
+    const el = e.target, to = +el.dataset.count, t0 = performance.now(), dur = 1300;
+    (function step(t) { const p = Math.min(1, (t - t0) / dur); el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3))).toLocaleString('en-US'); if (p < 1) requestAnimationFrame(step); })(t0);
+  }), { threshold: .5 });
+  document.querySelectorAll('[data-count]').forEach(el => io.observe(el));
+})();
+
+/* ---------- 复制联系方式 ---------- */
+document.querySelectorAll('.copy').forEach(btn => btn.addEventListener('click', () => {
+  const el = document.getElementById(btn.dataset.target);
+  const done = t => { btn.textContent = t; setTimeout(() => (btn.textContent = '复制'), 1600); };
+  const select = () => { const r = document.createRange(); r.selectNodeContents(el); const s = getSelection(); s.removeAllRanges(); s.addRange(r); done('已选中'); };
+  try { navigator.clipboard.writeText(el.textContent.trim()).then(() => done('已复制'), select); } catch (e) { select(); }
+}));
+</script>
+</body>
+</html>
