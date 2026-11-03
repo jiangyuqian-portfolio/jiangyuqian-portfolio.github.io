@@ -8,5 +8,3 @@
 纯静态页面（HTML + CSS + 原生 JavaScript），不依赖任何外部资源，可直接部署到 GitHub Pages。
 
 数据来源：Olist Brazilian E-Commerce Public Dataset、Kaggle E-commerce A/B Testing（ab_data.csv），均为公开数据集，原始数据未包含在本仓库中。
-
-页面代码与部分分析代码在 AI（Claude）辅助下完成；分析思路、口径判断与结论由本人完成并逐一核对。
