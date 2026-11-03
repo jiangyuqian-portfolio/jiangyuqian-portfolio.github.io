@@ -39,8 +39,8 @@ h2{font-family:var(--serif);font-weight:900;letter-spacing:.01em}
   <div class="gutter"><div class="narrow"><section class="case-hero">
       <a class="back" href="index.html">← 返回作品集</a>
 <div class="eyebrow">案例 02 · 实验分析</div>
-  <h1>实验结果不显著，新落地页还要不要上线</h1>
-  <p class="lede">一家电商网站用 22 天、约 29 万用户测试新版落地页，结果不显著。这里记录我怎么先确认实验本身没问题，再用置信区间和功效分析，把“不显著”变成一个能执行的上线判断。</p>
+  <h1>实验结果不显著时，新落地页是否上线</h1>
+  <p class="lede">某电商网站以约 29 万用户、为期 22 天测试新版落地页，结果不显著。本案例先验证实验的有效性，再结合置信区间与功效分析，将“不显著”转化为明确的上线决策。</p>
   <div class="meta">
     <span><b>数据</b>　Kaggle 公开电商落地页实验数据（教学数据集）</span>
     <span><b>时间</b>　2017.01.02 – 01.24</span>
@@ -62,30 +62,30 @@ h2{font-family:var(--serif);font-weight:900;letter-spacing:.01em}
   <div class="decision glass glow">
     <div class="k2">决策建议</div>
     <div class="v">不上线新页面，停止本次测试</div>
-    <p>新页面的相对提升上限只有 <span class="num">0.8%</span>，低于 <span class="num">2%</span> 的上线门槛。想测出 1% 的提升还要再跑近半年，不划算。</p>
+    <p>新页面相对提升的上限仅为 <span class="num">0.8%</span>，低于 <span class="num">2%</span> 的上线门槛；若要检测 1% 的提升，还需近半年，继续测试成本过高。</p>
   </div>
   <div class="findings">
-    <div class="finding"><div><strong>实验本身可信</strong><span>两组各占 <span class="num">50.0%</span>，SRM 检验 p = <span class="num">0.84</span>。<span class="num">3,893</span> 名用户两个页面都看过，已整组剔除。</span></div></div>
-    <div class="finding"><div><strong>新页面没有提升，值得上线的提升也基本可以排除</strong><span>差异 <span class="num">−0.14</span> 个百分点，95% 置信区间 <span class="num">[−0.38, +0.09]</span>。这个样本量足以测出 <span class="num">2.8%</span> 以上的提升（功效 80%），这次没有测到。</span></div></div>
-    <div class="finding"><div><strong>换几种方式检查，结论都成立</strong><span>没有新奇效应；按工作日 / 周末、访问时段分群都不显著；换一种清洗方式，结论也一样。</span></div></div>
+    <div class="finding"><div><strong>实验本身可信</strong><span>两组各占 <span class="num">50.0%</span>，SRM 检验 p = <span class="num">0.84</span>。<span class="num">3,893</span> 名用户同时接触了新旧页面，已整组剔除。</span></div></div>
+    <div class="finding"><div><strong>新页面无显著提升，且可排除达到上线标准的提升</strong><span>差异 <span class="num">−0.14</span> 个百分点，95% 置信区间 <span class="num">[−0.38, +0.09]</span>。当前样本量可在 80% 功效下检测 <span class="num">2.8%</span> 以上的提升，本次未检测到。</span></div></div>
+    <div class="finding"><div><strong>结论通过多项稳健性检验</strong><span>未发现新奇效应；按工作日 / 周末及访问时段分群均不显著；更换数据清洗方式后结论不变。</span></div></div>
   </div>
 </section>
 
 <section>
   <h2>1 · 先检查实验本身</h2>
-  <p class="q">数据能不能信？分组有没有出问题？</p>
-  <p>按设计，对照组看旧页面，实验组看新页面，每个用户只分一次组。原始数据 <span class="num">294,478</span> 行，检查时发现两个问题，查下去其实是同一件事：</p>
+  <p class="q">数据是否可信？分组是否存在问题？</p>
+  <p>实验设计为：对照组访问旧页面，实验组访问新页面，每位用户仅分组一次。原始数据共 <span class="num">294,478</span> 行，检查中发现两个问题，二者实为同一原因：</p>
   <div class="table-wrap"><table>
     <thead><tr><th>发现</th><th class="r">数量</th><th>说明</th></tr></thead>
     <tbody>
       <tr><td>分组和页面对不上</td><td class="r num">3,893 行</td><td>例如对照组用户看到了新页面</td></tr>
       <tr><td>用户重复出现</td><td class="r num">3,894 人</td><td>每人出现 2 次</td></tr>
-      <tr><td>两者的关系</td><td class="r num">100%</td><td>对不上的记录全部来自重复用户，这些人新旧页面都看过</td></tr>
+      <tr><td>两者的关系</td><td class="r num">100%</td><td>不一致记录全部来自重复用户，这些用户同时接触了新旧页面</td></tr>
     </tbody>
   </table></div>
-  <p>这些用户两个页面都看过，没法归到任何一组，所以我把这 <span class="num">3,893</span> 人<b>整组剔除</b>（占 <span class="num">1.3%</span>）。剔除前先确认会不会带来偏差：他们的记录在“对照组 / 实验组 × 旧页面 / 新页面”四种组合里各有 1,900–2,000 条，分布很均匀，更像是一个对两组影响相同的分流 bug，剔除不会偏向哪一组。另有 1 名重复用户的两条记录分组都对，保留了他最早的一条。</p>
-  <p>常见的做法是只删掉对不上的那一行，但这样会留下看过两个页面的人。后面的稳健性检查里两种做法都算了，结论一致。</p>
-  <p>清洗后，对照组 <span class="num">143,293</span> 人，实验组 <span class="num">143,398</span> 人。用卡方检验对比 50/50 的设计比例，p = <span class="num">0.84</span>，没有样本比例失衡（SRM）。这一步要是没通过，后面的结果都不能用。</p>
+  <p>这些用户受两个页面共同影响，无法归入任何一组，因此将 <span class="num">3,893</span> 人<b>整组剔除</b>（占 <span class="num">1.3%</span>）。剔除前检验了偏差风险：其记录在“对照组 / 实验组 × 旧页面 / 新页面”四种组合中各有 1,900–2,000 条，分布均衡，判断为对两组影响相同的分流 bug，剔除不会造成偏向。另有 1 名重复用户的两条记录分组均正确，保留其最早一条。</p>
+  <p>常见做法是仅删除不一致的记录，但这会保留同时接触两个页面的用户。稳健性检验中对两种做法分别计算，结论一致。</p>
+  <p>清洗后，对照组 <span class="num">143,293</span> 人，实验组 <span class="num">143,398</span> 人。用卡方检验对比 50/50 的设计比例，p = <span class="num">0.84</span>，不存在样本比例失衡（SRM）。该检验是后续分析成立的前提。</p>
   <details><summary>SQL 要点：识别污染用户并整组剔除</summary><pre>DROP TABLE IF EXISTS ab_clean;
 CREATE TABLE ab_clean AS
 WITH bad AS (   -- 任何一条记录分组与页面不一致的用户
@@ -103,14 +103,14 @@ FROM r WHERE rn = 1;</pre></details>
   <h2>2 · 新页面有没有效果</h2>
   <p class="q">新页面的转化率比旧页面高吗？</p>
   <p>旧页面转化率 <span class="num">12.02%</span>（17,220 / 143,293），新页面 <span class="num">11.87%</span>（17,025 / 143,398）。双样本比例 z 检验 p = <span class="num">0.23</span>；如果只检验“新页面更好”这一个方向，p = <span class="num">0.88</span>。</p>
-  <figure class="chart-card glass"><div class="ct">新页面在整体和各分群中都没有显著提升</div><div class="cs">点为估计值，线为 95% 置信区间；浅蓝区域是这次实验能测出的提升范围</div><div class="chart" data-chart="forest" data-label="森林图：整体差异 -0.14 个百分点，置信区间 -0.38 到 +0.09；实验前后半段、工作日周末、四个时段的置信区间都跨过 0，没有一个进入可检测提升区间"></div></figure>
-  <h3>不显著，不代表没有结论</h3>
-  <p>只说“p &gt; 0.05，不显著”还不够。不显著可能是新页面真的没用，也可能是样本太少看不出来。要区分这两种情况，得看两样东西：</p>
+  <figure class="chart-card glass"><div class="ct">新页面在整体和各分群中都没有显著提升</div><div class="cs">点为估计值，线为 95% 置信区间；浅蓝区域为本实验可检测的提升范围</div><div class="chart" data-chart="forest" data-label="森林图：整体差异 -0.14 个百分点，置信区间 -0.38 到 +0.09；实验前后半段、工作日周末、四个时段的置信区间都跨过 0，没有一个进入可检测提升区间"></div></figure>
+  <h3>不显著不等于没有结论</h3>
+  <p>仅报告“p &gt; 0.05，不显著”并不充分。不显著可能源于新页面确实无效，也可能源于样本量不足。区分二者需要考察两项指标：</p>
   <ul class="prose">
-    <li><b>置信区间：</b>相对提升的 95% 置信区间是 <span class="num">[−3.2%, +0.8%]</span>，新页面最好的情况也只比旧页面高 0.8%。</li>
+    <li><b>置信区间：</b>相对提升的 95% 置信区间是 <span class="num">[−3.2%, +0.8%]</span>，即新页面最乐观的情况下仅比旧页面高 0.8%。</li>
     <li><b>最小可检测效应（MDE）：</b>在 5% 显著性和 80% 功效下，这个样本量能可靠检测出 <span class="num">0.34</span> 个百分点（相对 <span class="num">2.8%</span>）以上的提升。</li>
   </ul>
-  <div class="callout">假设业务方认为，相对提升至少要到 <b>2%</b> 才值得承担新页面的开发和维护成本。置信区间上限 0.8% 远低于 2%，所以可以比较有把握地说：<b>新页面达不到上线标准</b>。</div>
+  <div class="callout">假设相对提升达到 <b>2%</b> 才能覆盖新页面的开发与维护成本。置信区间上限 0.8% 明显低于该门槛，因此可以较有把握地判断：<b>新页面未达到上线标准</b>。</div>
   <details><summary>Python 要点：z 检验、置信区间与 MDE</summary><pre>from scipy import stats
 import numpy as np
 
@@ -128,32 +128,32 @@ mde = (z_a + z_b) * np.sqrt(pc*(1-pc) * (1/nc + 1/nt))</pre></details>
 </section>
 
 <section>
-  <h2>3 · 这个结论稳不稳</h2>
-  <p class="q">会不会是时间、人群或数据处理方式造成的假象？</p>
+  <h2>3 · 结论是否稳健</h2>
+  <p class="q">结果是否受时间、人群或数据处理方式影响？</p>
   <h3>效果随时间稳定，没有新奇效应</h3>
-  <p>新页面刚上线时，用户可能出于新鲜感多点几下，过一阵就消退了，这就是新奇效应。我把实验分成前后两半：前半段差异 <span class="num">+0.02</span> 个百分点，后半段 <span class="num">−0.29</span>，两者差别不显著（p = <span class="num">0.20</span>）。下图是逐日累计的效果，置信区间随样本增加逐渐收窄，但一直包含 0。</p>
-  <figure class="chart-card glass"><div class="ct">置信区间随样本增加而收窄，始终包含 0</div><div class="cs">逐日累计的转化率差异与 95% 置信区间</div><div class="chart" data-chart="cum" data-label="累计差异折线和置信区间带：从首日 -0.66 逐渐收敛到 -0.14，区间始终包含 0"></div><figcaption>首日样本太少，区间过宽，纵轴做了截断。</figcaption></figure>
-  <p>这张图也能看出“中途偷看”的风险：单日差异在 <span class="num">−0.94</span> 到 <span class="num">+1.36</span> 个百分点之间来回波动，如果哪天看到一个好看的数字就宣布胜利，很容易误判。这次 22 天里，累计 p 值最低也只有 <span class="num">0.13</span>。逐日 p 值在这里只用来描述过程，没有用来决定何时停止；如果真要边测边看，应该事先用序贯检验。</p>
-  <h3>分群：没有哪类用户明显更喜欢新页面</h3>
-  <p>按工作日 / 周末和访问时段拆成 6 个分群，都不显著。周末和凌晨时段新页面略差一点（p = <span class="num">0.06</span> 和 <span class="num">0.09</span>），但同时检验 6 个分群，本来就容易碰巧出现接近显著的结果，做 Bonferroni 校正后分别是 <span class="num">0.38</span> 和 <span class="num">0.53</span>。这些可以留作下一轮实验的线索，不能当结论。</p>
+  <p>新奇效应指用户因新鲜感在短期内表现更积极，随后效果减弱。将实验分为前后两半：前半段差异 <span class="num">+0.02</span> 个百分点，后半段 <span class="num">−0.29</span> 个百分点，两者差异不显著（p = <span class="num">0.20</span>）。逐日累计效果显示，置信区间随样本增加逐渐收窄，但始终包含 0。</p>
+  <figure class="chart-card glass"><div class="ct">置信区间随样本增加而收窄，始终包含 0</div><div class="cs">逐日累计的转化率差异与 95% 置信区间</div><div class="chart" data-chart="cum" data-label="累计差异折线和置信区间带：从首日 -0.66 逐渐收敛到 -0.14，区间始终包含 0"></div><figcaption>首日样本量过小、区间过宽，纵轴已截断。</figcaption></figure>
+  <p>该图同时体现了“中途偷看”的风险：单日差异在 <span class="num">−0.94</span> 至 <span class="num">+1.36</span> 个百分点之间波动，若依据某日结果提前结束实验，容易误判。本次 22 天中，累计 p 值最低为 <span class="num">0.13</span>。逐日 p 值仅用于描述过程，未用于决定停止时间；如需持续监测，应事先采用序贯检验。</p>
+  <h3>分群：未发现对新页面反应更积极的用户群</h3>
+  <p>按工作日 / 周末及访问时段划分的 6 个分群均不显著。周末和凌晨时段新页面略差（p = <span class="num">0.06</span> 和 <span class="num">0.09</span>），但多重比较下出现接近显著结果的概率较高，经 Bonferroni 校正后分别为 <span class="num">0.38</span> 和 <span class="num">0.53</span>。上述结果可作为下一轮实验的线索，不构成结论。</p>
   <h3>换一种清洗方式，结论不变</h3>
-  <p>如果只删掉对不上的记录再按用户去重（更常见、但不够严谨的做法），差异是 <span class="num">−0.16</span> 个百分点，p = <span class="num">0.19</span>；完全不清洗，差异是 <span class="num">−0.15</span> 个百分点。三种处理方式结论一致。</p>
+  <p>若仅删除不一致记录并按用户去重（常见但不够严谨的做法），差异为 <span class="num">−0.16</span> 个百分点，p = <span class="num">0.19</span>；不做清洗时，差异为 <span class="num">−0.15</span> 个百分点。三种处理方式结论一致。</p>
 </section>
 
 <section>
-  <h2>4 · 要不要继续测</h2>
-  <p class="q">如果再多测一段时间，会不会测出效果？</p>
-  <p>这个实验每天大约进来 <span class="num">13,000</span> 名新用户。按 12% 的基线转化率，测出不同幅度的提升分别需要多少天：</p>
+  <h2>4 · 是否继续测试</h2>
+  <p class="q">延长测试时间能否检测到效果？</p>
+  <p>实验每日新增用户约 <span class="num">13,000</span> 名。以 12% 的基线转化率计算，检测不同幅度提升所需的天数如下：</p>
   <figure class="chart-card glass"><div class="ct">要检测 1% 的提升需要近半年</div><div class="cs">显著性 5%、功效 80%；红色虚线为本次实验时长 22 天</div><div class="chart" data-chart="sampleSize" data-label="检测不同相对提升所需天数：+1% 需 178 天，+2% 需 45 天，+3% 需 20 天，+5% 需 8 天；本次实验 22 天"></div></figure>
-  <p>这次 22 天大约能测出 3% 的提升。测 2% 要 45 天，测 1% 要 178 天。而置信区间已经说明真实提升最多 0.8%，就算再测半年，最好的结果也只是确认一个不够上线的小提升。所以我建议停止测试，把流量留给下一个改版方案。</p>
+  <p>本次 22 天可检测约 3% 的提升；检测 2% 需 45 天，检测 1% 需 178 天。鉴于置信区间显示真实提升至多 0.8%，即使延长半年，最理想的结果也只是确认一个未达上线标准的小幅提升。因此建议停止测试，将流量用于下一版方案。</p>
 </section>
 
 <section>
-  <h2>5 · 结论之后做什么</h2>
-  <p class="q">"不上线"之后，团队下一步做什么？下次实验怎么设计得更好？</p>
+  <h2>5 · 业务落地</h2>
+  <p class="q">决定不上线后，团队的下一步行动是什么？下一轮实验如何改进？</p>
 
-  <h3>这次实验本该提前定好的规则</h3>
-  <p>看什么指标、什么情况下上线，应该在实验开始前写清楚，免得结果出来后再找理由。按这次的情况，规则大致是：</p>
+  <h3>实验前应明确的规则</h3>
+  <p>评估指标与上线条件应在实验开始前确定，避免结果出来后事后归因。结合本次实验，规则如下：</p>
   <div class="table-wrap"><table>
     <thead><tr><th>类型</th><th>指标</th><th>作用</th></tr></thead>
     <tbody>
@@ -169,7 +169,7 @@ mde = (z_a + z_b) * np.sqrt(pc*(1-pc) * (1/nc + 1/nt))</pre></details>
   <div class="table-wrap"><table class="plan">
     <thead><tr><th>优先级</th><th>行动</th><th>负责团队</th><th>具体做什么</th></tr></thead>
     <tbody>
-      <tr><td><span class="pri p1">P1</span></td><td><b>停止测试，全部用户回到旧页面</b></td><td>产品</td><td>新页面达不到上线标准，继续测只会占用流量</td></tr>
+      <tr><td><span class="pri p1">P1</span></td><td><b>停止测试，全部用户回到旧页面</b></td><td>产品</td><td>新页面未达到上线标准，继续测试将占用流量</td></tr>
       <tr><td><span class="pri p1">P1</span></td><td><b>修复分流 bug</b></td><td>工程 + 数据</td><td>排查为什么 3,893 名用户被记录了两次、看到了两个页面；之后每次实验上线时自动跑 SRM 检查和"一人一组"检查，不通过就报警</td></tr>
       <tr><td><span class="pri p2">P2</span></td><td><b>复盘新页面，提出下一版假设</b></td><td>产品 + 设计 + 数据</td><td>逐项列出新页面改了什么，结合用户访谈判断哪些改动可能有负面影响。周末和凌晨时段新页面略差（未达显著），可以作为下一版的观察点</td></tr>
       <tr><td><span class="pri p2">P2</span></td><td><b>设计下一轮实验</b></td><td>数据</td><td>见下表：先算好样本量和时长，再开始</td></tr>
@@ -187,7 +187,7 @@ mde = (z_a + z_b) * np.sqrt(pc*(1-pc) * (1/nc + 1/nt))</pre></details>
       <tr><td>决策</td><td>按上面事先定好的上线规则判断，结论出来前不改规则</td></tr>
     </tbody>
   </table></div>
-  <div class="callout">一句话向业务方汇报：<b>新页面没有带来提升，最好的情况也只有 0.8%，低于 2% 的上线门槛，建议不上线。另外分流有 bug，需要先修好，再用约 20 天测下一版改动。</b></div>
+  <div class="callout">一句话向业务方汇报：<b>新页面未带来显著提升，相对提升上限 0.8%，低于 2% 的上线门槛，建议不上线。同时发现分流 bug，需修复后再用约 20 天测试下一版改动。</b></div>
 </section>
 
 <section>
