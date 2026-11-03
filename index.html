@@ -90,6 +90,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .copy { font: 500 12px var(--font-mono); color: var(--ink); background: transparent; border: 1px solid var(--ink); border-radius: 999px; padding: 6px 14px; cursor: pointer; transition: background .2s, color .2s; }
 .copy:hover { background: var(--ink); color: var(--bg); }
 @media (max-width: 760px) { .about { grid-template-columns: minmax(0, 1fr); gap: 24px; } }
+.skills { margin-top: 14px; font-size: 14px; color: var(--ink-2); }
+.skills b { font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: .06em; color: var(--sky); margin-right: 10px; }
 .endnote { font-size: 13px; color: var(--muted); padding-block: 32px 48px; }
 </style>
 </head>
@@ -113,7 +115,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
       <div>
         <div class="eyebrow">Data Analysis Projects</div>
         <h1>两个数据分析案例</h1>
-        <p>一个是电商平台的经营诊断，一个是落地页 A/B 测试的上线判断。两个项目都从原始数据做起，先把数据和口径查清楚，再下结论。</p>
+        <p>电商平台的经营诊断和落地页 A/B 测试的上线判断。</p>
       </div>
       <div class="by"><b>姜玉倩</b><br>武汉轻工大学 · 大数据管理与应用</div>
     </section>
@@ -125,12 +127,12 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
           <span class="tag">Case 01 · 用户与经营分析</span>
         </div>
         <div class="wbody">
-          <h2>增长见顶之后，这家电商平台应该先修物流</h2>
-          <p class="find">用巴西电商 Olist 近 10 万笔订单做的经营诊断。平台增长基本靠拉新，老用户很少回来；延迟订单只占 6.7%，差评却有三分之一出在它们身上。</p>
+          <h2>增长见顶后，电商平台应优先改善物流</h2>
+          <p class="find">基于巴西电商平台 Olist 近 10 万笔订单的经营诊断。平台增长主要依赖拉新，用户复购率低；延迟订单仅占 6.7%，却贡献了约三分之一的差评。</p>
           <div class="kpis">
             <div class="kpi"><div class="n">+138%</div><div class="l">GMV 同比增长</div></div>
-            <div class="kpi"><div class="n">2.1%</div><div class="l">复购率（去掉同日拆单）</div></div>
-            <div class="kpi"><div class="n bad">32.6%</div><div class="l">差评出自延迟订单</div></div>
+            <div class="kpi"><div class="n">2.1%</div><div class="l">复购率（剔除同日拆单）</div></div>
+            <div class="kpi"><div class="n bad">32.6%</div><div class="l">差评来自延迟订单</div></div>
           </div>
           <div class="wfoot"><div class="chips"><span class="chip">多表 JOIN</span><span class="chip">同期群留存</span><span class="chip">RFM</span><span class="chip">分层对比</span></div><span class="arrow" aria-hidden="true">→</span></div>
         </div>
@@ -142,12 +144,12 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
           <span class="tag">Case 02 · 实验分析</span>
         </div>
         <div class="wbody">
-          <h2>实验结果不显著，新落地页还要不要上线</h2>
-          <p class="find">约 29 万用户、22 天的落地页实验。先查出并处理了一个分流问题，再用置信区间和功效分析判断：新页面就算有提升，也不会超过 0.8%，达不到上线标准。</p>
+          <h2>实验结果不显著时，新落地页是否上线</h2>
+          <p class="find">约 29 万用户、为期 22 天的落地页实验。识别并处理分流问题后，结合置信区间与功效分析判断：新页面相对提升的上限为 0.8%，未达到上线标准。</p>
           <div class="kpis">
             <div class="kpi"><div class="n">p = 0.23</div><div class="l">新旧页面无显著差异</div></div>
             <div class="kpi"><div class="n">≤ 0.8%</div><div class="l">相对提升的上限</div></div>
-            <div class="kpi"><div class="n">178 天</div><div class="l">测出 1% 提升还需要</div></div>
+            <div class="kpi"><div class="n">178 天</div><div class="l">检测 1% 提升所需时长</div></div>
           </div>
           <div class="wfoot"><div class="chips"><span class="chip">SRM 检查</span><span class="chip">z 检验</span><span class="chip">功效分析</span><span class="chip">多重比较</span></div><span class="arrow" aria-hidden="true">→</span></div>
         </div>
@@ -167,7 +169,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
       <div class="wrap night-in">
         <div>
           <div class="eyebrow">SQL</div>
-          <h2>项目里的几段关键查询</h2>
+          <h2>项目的关键查询</h2>
           <div class="term" aria-label="SQL 终端：循环展示项目里的真实查询和结果">
             <div class="term-bar"><i></i><i></i><i></i><span id="term-file">olist.db — sqlite3</span></div>
             <div class="term-body"><pre id="term-out"></pre></div>
@@ -176,12 +178,12 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
         </div>
         <div>
           <div class="eyebrow">Method</div>
-          <h2>我做分析的几个习惯</h2>
+          <h2>分析步骤</h2>
           <ol class="steps2">
-            <li><div><b>先定口径</b><span>动手前先想清楚：指标怎么算，用户怎么认，时间窗取多长。</span><em>Olist 的 customer_id 每下一单就换一个，用它算复购率是 0%；换成 customer_unique_id 才是 3.0%。</em></div></li>
-            <li><div><b>先确认数据可信</b><span>缺失、重复、分组错误，查清楚再往下做。</span><em>A/B 数据里有 3,893 名用户两个页面都看过，整组剔除后两组仍然均衡。</em></div></li>
-            <li><div><b>拆开看，控制干扰</b><span>把总数拆成几个因子，用分层排除其他因素，相关不轻易当成因果。</span><em>在同一个州、同一个品类里比较，延迟订单的评分仍然低 1.99 分。</em></div></li>
-            <li><div><b>落到决策</b><span>结论最后要回答“所以该做什么”，能量化的尽量量化。</span><em>新页面提升的上限是 0.8%，低于 2% 的门槛，所以建议不上线。</em></div></li>
+            <li><div><b>先定口径</b><span>分析前明确指标定义、用户识别方式和时间窗口。</span><em>Olist 的 customer_id 按订单生成，以其计算复购率为 0%；改用 customer_unique_id 后为 3.0%。</em></div></li>
+            <li><div><b>检查数据质量</b><span>排查缺失、重复和分组异常，确认数据可信后再进入分析。</span><em>A/B 数据中 3,893 名用户同时接触了新旧页面，整组剔除后两组仍保持均衡。</em></div></li>
+            <li><div><b>拆解与对比</b><span>将指标拆解为驱动因子，通过分层对比控制干扰因素，审慎区分相关与因果。</span><em>控制州与品类后，延迟订单的评分仍低 1.99 分。</em></div></li>
+            <li><div><b>落到决策</b><span>结论对应具体行动，并尽可能量化预期影响。</span><em>新页面相对提升上限 0.8%，低于 2% 的上线门槛，建议不上线。</em></div></li>
           </ol>
           <div class="toolline"><b>SQL</b>JOIN · 窗口函数 · CTE　<b>Python</b>pandas · scipy · matplotlib　<b>统计</b>假设检验 · 置信区间 · 功效分析　<b>可视化</b>matplotlib · Tableau</div>
         </div>
@@ -194,14 +196,15 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
       <div>
         <div class="eyebrow">About</div>
         <h2>姜玉倩</h2>
-        <p>武汉轻工大学大数据管理与应用专业本科生。对用户增长和体验类的问题比较感兴趣，做分析时习惯先把口径定清楚，最后落到能执行的建议上。</p>
+        <p>武汉轻工大学大数据管理与应用专业本科生</p>
+        <p class="skills"><b>技能</b>MySQL · Python · R · Stata · Excel / WPS Office · Jupyter Notebook · VS Code · PyCharm · Google Analytics · Canva · CapCut</p>
       </div>
       <div class="lines">
         <div class="line"><div class="ck">Phone</div><div class="cv" id="c-phone">13971242033</div><button type="button" class="copy" data-target="c-phone">复制</button></div>
         <div class="line"><div class="ck">Email</div><div class="cv" id="c-mail">jiangyuqian116@163.com</div><button type="button" class="copy" data-target="c-mail">复制</button></div>
       </div>
     </section>
-    <footer class="endnote">两个项目使用的都是公开数据集：Olist 巴西电商数据，以及 Kaggle 上的电商落地页实验数据。<br>页面代码与部分分析代码在 AI（Claude）辅助下完成；分析思路、口径判断与结论由我本人完成并逐一核对。</footer>
+    <footer class="endnote">数据来源：Olist 巴西电商公开数据集、Kaggle 电商落地页实验数据集。<br>页面代码与部分分析代码在 AI（Claude）辅助下完成；分析思路、口径判断与结论由我本人完成并逐一核对。</footer>
   </div>
 </main>
 
